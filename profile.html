@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - Spotify</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <style>
+    .profile-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: flex-end;
+      gap: 2rem;
+      background: linear-gradient(180deg, #535353 0%, #181818 100%);
+      padding: 3rem 2rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+
+    .profile-avatar-large {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: var(--accent-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      font-weight: 700;
+      color: #000;
+      box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .profile-avatar-large:hover {
+      transform: scale(1.05);
+    }
+
+    .profile-avatar-large::after {
+      content: '✎';
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .profile-avatar-large:hover::after {
+      opacity: 1;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-type {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .profile-name {
+      font-size: 4rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+      line-height: 1;
+    }
+
+    .profile-stats {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.875rem;
+    }
+
+    .profile-stat {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .profile-stat strong {
+      font-weight: 700;
+    }
+
+    .profile-actions {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .action-btn {
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 500px;
+      font-weight: 700;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .action-btn-primary {
+      background: var(--accent-color);
+      color: #000;
+    }
+
+    .action-btn-primary:hover {
+      background: var(--accent-hover);
+      transform: scale(1.05);
+    }
+
+    .action-btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--text-secondary);
+    }
+
+    .action-btn-secondary:hover {
+      border-color: var(--text-primary);
+      transform: scale(1.05);
+    }
+
+    .profile-section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    .settings-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .setting-item {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .setting-info h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .setting-info p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .setting-control {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .edit-input {
+      padding: 0.5rem 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      min-width: 250px;
+    }
+
+    .edit-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+
+    .btn-small {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-edit {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .btn-edit:hover {
+      background: var(--border-color);
+    }
+
+    .btn-save {
+      background: var(--accent-color);
+      color: #000;
+    }
+
+    .btn-save:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-cancel {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-cancel:hover {
+      color: var(--text-primary);
+      border-color: var(--text-primary);
+    }
+
+    .back-to-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      margin-bottom: 2rem;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .back-to-home:hover {
+      color: var(--text-primary);
+    }
+
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .profile-name {
+        font-size: 2rem;
+      }
+
+      .profile-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .action-btn {
+        width: 100%;
+      }
+
+      .setting-item {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+
+      .setting-control {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .edit-input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <a href="dashboard.html" class="back-to-home">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+      </svg>
+      Back to Home
+    </a>
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-avatar-large" id="profileAvatar" title="Click to change avatar color">
+        JD
+      </div>
+      <div class="profile-info">
+        <div class="profile-type">Profile</div>
+        <h1 class="profile-name" id="profileName">John Doe</h1>
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <strong>42</strong> <span>Playlists</span>
+          </div>
+          <div class="profile-stat">•</div>
+          <div class="profile-stat">
+            <strong>156</strong> <span>Following</span>
+          </div>
+          <div class="profile-stat">•</div>
+          <div class="profile-stat">
+            <strong>89</strong> <span>Followers</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Actions -->
+    <div class="profile-actions">
+      <button class="action-btn action-btn-primary" onclick="window.location.href='dashboard.html'">
+        Continue Listening
+      </button>
+      <button class="action-btn action-btn-secondary" onclick="alert('Share feature coming soon!')">
+        Share Profile
+      </button>
+    </div>
+
+    <!-- Account Settings -->
+    <div class="profile-section">
+      <h2 class="section-title">Account Settings</h2>
+      <div class="settings-grid">
+        <!-- Name Setting -->
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Display Name</h3>
+            <p id="displayNameValue">John Doe</p>
+          </div>
+          <div class="setting-control">
+            <button class="btn-small btn-edit" onclick="editField('displayName')">Edit</button>
+          </div>
+        </div>
+
+        <!-- Email Setting -->
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Email</h3>
+            <p id="emailValue">john.doe@example.com</p>
+          </div>
+          <div class="setting-control">
+            <button class="btn-small btn-edit" onclick="editField('email')">Edit</button>
+          </div>
+        </div>
+
+        <!-- Password Setting -->
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Password</h3>
+            <p>••••••••</p>
+          </div>
+          <div class="setting-control">
+            <button class="btn-small btn-edit" onclick="changePassword()">Change</button>
+          </div>
+        </div>
+
+        <!-- Account Type -->
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Account Type</h3>
+            <p>Free</p>
+          </div>
+          <div class="setting-control">
+            <button class="btn-small action-btn-primary" onclick="alert('Upgrade to Premium coming soon!')">
+              Upgrade to Premium
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Privacy Settings -->
+    <div class="profile-section">
+      <h2 class="section-title">Privacy Settings</h2>
+      <div class="settings-grid">
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Private Session</h3>
+            <p>Hide your listening activity from friends</p>
+          </div>
+          <div class="setting-control">
+            <label class="toggle-switch">
+              <input type="checkbox" id="privateSession">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Show Recently Played</h3>
+            <p>Display your recently played artists on profile</p>
+          </div>
+          <div class="setting-control">
+            <label class="toggle-switch">
+              <input type="checkbox" id="showRecent" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="profile-section">
+      <h2 class="section-title">Danger Zone</h2>
+      <div class="settings-grid">
+        <div class="setting-item" style="border-color: #f15e6c;">
+          <div class="setting-info">
+            <h3>Delete Account</h3>
+            <p style="color: #f15e6c;">Permanently delete your account and all data</p>
+          </div>
+          <div class="setting-control">
+            <button class="btn-small" style="background: #f15e6c; color: #fff;" onclick="deleteAccount()">
+              Delete Account
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--bg-hover);
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: var(--accent-color);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(24px);
+    }
+  </style>
+
+  <script>
+    // Initialize profile with user data
+    function initProfile() {
+      const userData = localStorage.getItem('spotifyUser');
+      
+      if (!userData) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const user = JSON.parse(userData);
+      
+      // Update profile name
+      const profileName = document.getElementById('profileName');
+      const displayNameValue = document.getElementById('displayNameValue');
+      if (user.name) {
+        profileName.textContent = user.name;
+        displayNameValue.textContent = user.name;
+      }
+
+      // Update email
+      const emailValue = document.getElementById('emailValue');
+      if (user.email) {
+        emailValue.textContent = user.email;
+      }
+
+      // Update avatar
+      const profileAvatar = document.getElementById('profileAvatar');
+      if (user.name) {
+        const initials = user.name
+          .split(' ')
+          .map(word => word[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2);
+        profileAvatar.textContent = initials;
+      }
+
+      // Load avatar color preference
+      const savedColor = localStorage.getItem('avatarColor') || '#1DB954';
+      profileAvatar.style.background = savedColor;
+    }
+
+    // Edit field functionality
+    function editField(fieldName) {
+      const valueElement = document.getElementById(`${fieldName}Value`);
+      const currentValue = valueElement.textContent;
+      const settingItem = valueElement.closest('.setting-item');
+      const controlDiv = settingItem.querySelector('.setting-control');
+
+      // Create input and buttons
+      controlDiv.innerHTML = `
+        <input type="${fieldName === 'email' ? 'email' : 'text'}" 
+               class="edit-input" 
+               id="${fieldName}Input" 
+               value="${currentValue}">
+        <button class="btn-small btn-save" onclick="saveField('${fieldName}')">Save</button>
+        <button class="btn-small btn-cancel" onclick="cancelEdit('${fieldName}', '${currentValue}')">Cancel</button>
+      `;
+
+      document.getElementById(`${fieldName}Input`).focus();
+    }
+
+    // Save field
+    function saveField(fieldName) {
+      const input = document.getElementById(`${fieldName}Input`);
+      const newValue = input.value.trim();
+
+      if (!newValue) {
+        alert('Field cannot be empty!');
+        return;
+      }
+
+      // Update localStorage
+      const userData = JSON.parse(localStorage.getItem('spotifyUser'));
+      
+      if (fieldName === 'displayName') {
+        userData.name = newValue;
+        document.getElementById('profileName').textContent = newValue;
+        
+        // Update avatar initials
+        const profileAvatar = document.getElementById('profileAvatar');
+        const initials = newValue
+          .split(' ')
+          .map(word => word[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2);
+        profileAvatar.textContent = initials;
+      } else if (fieldName === 'email') {
+        userData.email = newValue;
+      }
+
+      localStorage.setItem('spotifyUser', JSON.stringify(userData));
+
+      // Update display
+      const valueElement = document.getElementById(`${fieldName}Value`);
+      valueElement.textContent = newValue;
+
+      // Reset control buttons
+      const settingItem = valueElement.closest('.setting-item');
+      const controlDiv = settingItem.querySelector('.setting-control');
+      controlDiv.innerHTML = `<button class="btn-small btn-edit" onclick="editField('${fieldName}')">Edit</button>`;
+
+      alert('Changes saved successfully!');
+    }
+
+    // Cancel edit
+    function cancelEdit(fieldName, originalValue) {
+      const valueElement = document.getElementById(`${fieldName}Value`);
+      const settingItem = valueElement.closest('.setting-item');
+      const controlDiv = settingItem.querySelector('.setting-control');
+      
+      controlDiv.innerHTML = `<button class="btn-small btn-edit" onclick="editField('${fieldName}')">Edit</button>`;
+    }
+
+    // Change password
+    function changePassword() {
+      const newPassword = prompt('Enter new password (min 8 characters):');
+      
+      if (!newPassword) return;
+      
+      if (newPassword.length < 8) {
+        alert('Password must be at least 8 characters!');
+        return;
+      }
+
+      const userData = JSON.parse(localStorage.getItem('spotifyUser'));
+      
+      // In a real app, you'd hash this and update the user database
+      alert('Password changed successfully! (In production, this would be securely hashed)');
+    }
+
+    // Delete account
+    function deleteAccount() {
+      const confirm1 = confirm('Are you sure you want to delete your account? This cannot be undone!');
+      if (!confirm1) return;
+
+      const confirm2 = confirm('This will permanently delete all your data. Are you absolutely sure?');
+      if (!confirm2) return;
+
+      // Clear all user data
+      localStorage.removeItem('spotifyUser');
+      
+      // Also remove from users list
+      const users = JSON.parse(localStorage.getItem('spotifyUsers') || '[]');
+      const userData = JSON.parse(localStorage.getItem('spotifyUser'));
+      const updatedUsers = users.filter(u => u.email !== userData.email);
+      localStorage.setItem('spotifyUsers', JSON.stringify(updatedUsers));
+
+      alert('Account deleted successfully. Goodbye!');
+      window.location.href = 'index.html';
+    }
+
+    // Avatar color change
+    document.getElementById('profileAvatar').addEventListener('click', function() {
+      const colors = ['#1DB954', '#E13300', '#8E44AD', '#3498DB', '#F39C12', '#E74C3C', '#1ABC9C', '#34495E'];
+      const currentColor = this.style.background || '#1DB954';
+      const currentIndex = colors.indexOf(currentColor);
+      const nextIndex = (currentIndex + 1) % colors.length;
+      const nextColor = colors[nextIndex];
+      
+      this.style.background = nextColor;
+      localStorage.setItem('avatarColor', nextColor);
+    });
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', initProfile);
+  </script>
+</body>
+</html>
